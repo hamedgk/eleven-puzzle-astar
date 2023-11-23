@@ -16,6 +16,7 @@ var examplePuzzle = puzzle.PuzzleBuffer{
 }
 
 func main() {
+
 	sortedArray := puzzle.SortPuzzle(examplePuzzle)
 	digested := puzzle.FromBuffer(sortedArray).Digest()
 
