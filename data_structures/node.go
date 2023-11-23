@@ -52,21 +52,27 @@ func TraceBack(node Node) {
 }
 
 func (node Node) Print() {
-	puzzleColor := color.New(color.FgGreen, color.Bold)
+	greenBold := color.New(color.FgGreen, color.Bold)
+	red := color.New(color.FgHiYellow, color.Bold)
+	action := color.New(color.FgHiWhite, color.Italic, color.Bold)
 	switch node.Direction {
 	case puzzle.Up:
-		color.Red("Up")
+		action.Println("Up")
 	case puzzle.Down:
-		color.Red("Down")
+		action.Println("Down")
 	case puzzle.Right:
-		color.Red("Right")
+		action.Println("Right")
 	case puzzle.Left:
-		color.Red("Left")
+		action.Println("Left")
 	}
 	w := tabwriter.NewWriter(os.Stdout, 4, 1, 2, ' ', 0)
 	for i := 0; i < puzzle.Rows; i++ {
 		for j := 0; j < puzzle.Cols; j++ {
-			puzzleColor.Fprintf(w, "%v\t", node.Puzzle.Buffer[i][j])
+			if node.Puzzle.Buffer[i][j] == puzzle.Blank {
+				red.Fprintf(w, "%v\t", puzzle.BlankStr)
+			} else {
+				greenBold.Fprintf(w, "%v\t", node.Puzzle.Buffer[i][j])
+			}
 		}
 		fmt.Fprintln(w)
 	}
