@@ -4,6 +4,11 @@ import (
 	"container/heap"
 	"eleven-puzzle/data_structures/puzzle"
 	"fmt"
+	"os"
+
+	"text/tabwriter"
+
+	"github.com/fatih/color"
 )
 
 type Node struct {
@@ -37,21 +42,34 @@ func (node *Node) IsGoal(buffer puzzle.PuzzleBuffer) bool {
 
 func TraceBack(node Node) {
 	if node.Parent == nil {
-		fmt.Print("init")
+		node.Print()
 		return
 	}
 
 	TraceBack(*node.Parent)
+	node.Print()
+
+}
+
+func (node Node) Print() {
+	puzzleColor := color.New(color.FgGreen, color.Bold)
 	switch node.Direction {
 	case puzzle.Up:
-		fmt.Print(" -> Up")
+		color.Red("Up")
 	case puzzle.Down:
-		fmt.Print(" -> Down")
+		color.Red("Down")
 	case puzzle.Right:
-		fmt.Print(" -> Right")
+		color.Red("Right")
 	case puzzle.Left:
-		fmt.Print(" -> Left")
-	default:
-		return
+		color.Red("Left")
 	}
+	w := tabwriter.NewWriter(os.Stdout, 4, 1, 2, ' ', 0)
+	for i := 0; i < puzzle.Rows; i++ {
+		for j := 0; j < puzzle.Cols; j++ {
+			puzzleColor.Fprintf(w, "%v\t", node.Puzzle.Buffer[i][j])
+		}
+		fmt.Fprintln(w)
+	}
+	w.Flush()
+	color.Cyan("----------------------------")
 }
