@@ -1,6 +1,8 @@
 package puzzle
 
-import "sort"
+import (
+	"sort"
+)
 
 type PuzzleBuffer = [Rows][Cols]byte
 type DigestCoords = map[uint8][]struct{ x, y int }
@@ -108,7 +110,7 @@ func (puzzle Puzzle) Digest() DigestCoords {
 	for i := 0; i < Rows; i++ {
 		for j := 0; j < Cols; j++ {
 			var value uint8 = puzzle.Buffer[i][j]
-			if value == Blank{
+			if value == Blank {
 				continue
 			}
 			current := digested[value]
