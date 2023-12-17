@@ -21,6 +21,7 @@ type Node struct {
 
 func (node *Node) Expand(queue *PriorityQueue, explored map[puzzle.PuzzleBuffer]bool, digested puzzle.DigestCoords) {
 	possibleMoves := node.Puzzle.PossibleBlankMoves()
+mainLoop:
 	for _, direction := range possibleMoves {
 		copyNode := *node
 		copyNode.Direction = direction
@@ -29,6 +30,16 @@ func (node *Node) Expand(queue *PriorityQueue, explored map[puzzle.PuzzleBuffer]
 		copyNode.Cost = node.Cost + 1
 		copyNode.HeuristicCost = copyNode.Cost + puzzle.Heuristic(digested, copyNode.Puzzle.Buffer)
 		if explored[copyNode.Puzzle.Buffer] {
+			for index, frontierNode := range *queue {
+				if copyNode.Puzzle.Buffer == node.Puzzle.Buffer {
+					if frontierNode.HeuristicCost > copyNode.HeuristicCost {
+						fmt.Println("********************************")
+						(*queue)[index] = Node{}
+						heap.Push(queue, copyNode)
+						continue mainLoop
+					}
+				}
+			}
 			continue
 		}
 		heap.Push(queue, copyNode)
@@ -40,15 +51,16 @@ func (node *Node) IsGoal(buffer puzzle.PuzzleBuffer) bool {
 	return node.Puzzle.Buffer == buffer
 }
 
-func TraceBack(node Node) {
+func TraceBack(node *Node, counter int) {
 	if node.Parent == nil {
+		fmt.Println(counter)
 		node.Print()
 		return
 	}
 
-	TraceBack(*node.Parent)
+	TraceBack(node.Parent, counter+1)
+	fmt.Println(counter)
 	node.Print()
-
 }
 
 func (node Node) Print() {
